@@ -122,7 +122,7 @@ fi
 rm -rf ~/.local/share/Trash/*
 
 # Reset Arduino Preferences
-cp -p preferences.txt ~/.arduino15/
+cp -p ~/RoboticsChallenge/preferences.txt ~/.arduino15/
 
 # Copy the latest script down to replace this one running
 cp "RoboticsChallenge/BRC Refresh.desktop" ~/Desktop
