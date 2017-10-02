@@ -48,6 +48,7 @@ confirmLocal () {
                 ;;
             *)
                 notify-send "Unknown response: $response"
+		exit -1
                 ;;
         esac
     fi
