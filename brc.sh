@@ -115,7 +115,7 @@ git reset --hard
 rm -rf ~/.local/share/Trash/*
 
 # Reset Arduino Preferences
-cp -p ~/Customisations/preferences.txt ~/.arduino15/
+cp -p preferences.txt ~/.arduino15/
 
 # Copy the latest script down to replace this one running
 cp "RoboticsChallenge/BRC Refresh.desktop" ~/Desktop
