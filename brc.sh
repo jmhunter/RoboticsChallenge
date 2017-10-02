@@ -57,6 +57,9 @@ confirmLocal () {
 (set -o igncr) 2>/dev/null && set -o igncr; # this comment is needed
 
 
+# Make sure we are in the home directory of the robot user, before we start
+cd ~
+
 if  confirmLocal "Local or Remote refresh ?" ; then
 	localRefresh=true
 else
@@ -94,22 +97,26 @@ if [ $localRefresh == false ]; then
 	if [ $connected == 0 ]; then
 		echo "Not connected, cannot refresh"
 		exit -1
+	else
+		echo "Yes, you are connected. Refreshing..."
 	fi
 	
-	# Do a clone and deal with it 
+	# Remove all old files; do a brand new clone and deal with it 
 	rm -rf RoboticsChallenge
 	git clone $MASTER_LOCATION
 
 else
 	echo "This will be a local refresh - all sketches will be deleted"
-fi
 
-cd ~/RoboticsChallenge
-# Remove all files (apart from .git, and anything similar that someone else 
-# has been clever enough to create!)
-rm -rf *
-# Reset to latest GIT
-git reset --hard
+	cd ~/RoboticsChallenge
+
+	# Remove all files (apart from perhaps .git, and anything similar that
+	# someone has been clever enough to create!)
+	rm -rf *
+
+	# Reset to latest GIT
+	git reset --hard
+fi
 
 # Empty the trash, if there are any files here
 rm -rf ~/.local/share/Trash/*
@@ -121,5 +128,3 @@ cp -p preferences.txt ~/.arduino15/
 cp "RoboticsChallenge/BRC Refresh.desktop" ~/Desktop
 
 notify-send "Robot Refresh" "Completed local refresh"
-
-# TODO XXXX ln -s RoboticsChallenge/brc.sh [rather than copy!]
