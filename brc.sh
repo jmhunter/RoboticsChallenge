@@ -127,6 +127,6 @@ cp -p ~/RoboticsChallenge/preferences.txt ~/.arduino15/
 
 # Copy the latest script down to replace this one running
 # (Could symlink it, but the symlink's icon is not aesthetically pleasing :) )
-cp "RoboticsChallenge/BRC Refresh.desktop" ~/Desktop
+cp "~/RoboticsChallenge/BRC Refresh.desktop" ~/Desktop
 
 notify-send "Robot Refresh" "Completed refresh"
