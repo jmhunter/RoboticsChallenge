@@ -38,7 +38,8 @@ confirmLocal () {
         response=`zenity --list --title "${1:-Local or Remote Refresh}" \
           --column="Type" --column="Description" \
           local "Does not need Internet connectivity" \
-          remote "Pulls from online repository" `
+          remote "Pulls from online repository" \
+          2>/dev/null `
         case $response in
             local) 
                 true
@@ -47,7 +48,7 @@ confirmLocal () {
                 false
                 ;;
             *)
-                notify-send "Unknown response: $response"
+                notify-send "Unknown response: '$response': exiting."
 		exit -1
                 ;;
         esac
