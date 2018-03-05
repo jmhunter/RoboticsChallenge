@@ -4,10 +4,9 @@
   V 1.1 - 21/08/14  - Updated to include new challenges
   V 1.2 - 23/03/15  - Cleaned up and simplified
   V 1.3 - 10/05/16  - Updated to fix minor bugs
+  V 1.4 - 06/03/18  - JMH removed debugging serial prints and test code, they are never used
   
   Robotics Challenge - - all supporting code
-
-  Also has a TestAll function you use to test all components are working
 
 */
 
@@ -33,15 +32,14 @@ void setup()
   pinMode(L3, OUTPUT);     
   pinMode(L4, OUTPUT);
       
-  Serial.begin(115200);  // Start the Serial and make sure the debug says 115200 
+  Serial.begin(9600);  // Start the Serial
   Serial.println("Starting Barclays Robot");
+  // We don't print debugging information within robo.ino any longer, but
+  // Serial.println() can still be used within user sketches
   
   tiltCentre();
   pointCentre();
   
-  //while(1)  // Use this to repeat forever
-  // testAll();
-
 }
 
 int readLineSensor(int pin)
@@ -66,14 +64,12 @@ int readLineSensor(int pin)
 int rightLineSensor()
 {
   int val = readLineSensor(RIGHT_LINE);
-  Serial.println("Right Line Sensor: " + val);
   return val;
 }
 
 int leftLineSensor()
 {
   int val= readLineSensor(LEFT_LINE);
-  Serial.println("Left Line Sensor: " + val);
   return val;
 }
 
@@ -94,7 +90,6 @@ void reverse(int wait, int vSpeedLeft, int vSpeedRight)
   if ( vSpeedRight > 255 ) 
     vSpeedRight = 255;
 
-  Serial.println("Moving Backwards: Speed Left and Right: " + String(vSpeedLeft) + " " + String(vSpeedRight));
   robMove(255-vSpeedLeft, HIGH, 255-vSpeedRight, HIGH);    // when reversing, the speed needs to be opposite, so subtract from 255
   delay(wait);
   
@@ -110,7 +105,6 @@ void forward(int wait,int vSpeedLeft,int vSpeedRight)
   if ( vSpeedRight > 255 ) 
     vSpeedRight = 255;
 
-  Serial.println("Moving Forwards: Speed Left and Right: " + String(vSpeedLeft) + " " + String(vSpeedRight));
   robMove(vSpeedLeft, LOW, vSpeedRight, LOW);
   delay(wait);
   
@@ -120,7 +114,6 @@ void forward(int wait,int vSpeedLeft,int vSpeedRight)
 
 void rightSpin(int wait, int vSpeed)
 {
-  Serial.println("Spinning right");
   robMove(vSpeed, LOW, 255 - vSpeed, HIGH);
   delay(wait);
   
@@ -130,7 +123,6 @@ void rightSpin(int wait, int vSpeed)
 
 void leftSpin(int wait,int vSpeed)
 {
-  Serial.println("Spinning left");
   robMove(255 - vSpeed, HIGH, vSpeed, LOW);
   delay(wait);
   
@@ -141,7 +133,6 @@ void leftSpin(int wait,int vSpeed)
 
 void halt(int wait)
 {
-  Serial.println("Stopping");
   robMove(0, LOW, 0, LOW);
   delay(wait);
 }
@@ -152,7 +143,6 @@ boolean leftObstacleSensor()
  
   if ( digitalRead(LEFT_OBSTACLE) == 0 ) // Test left sensor
   {
-    Serial.println("Left Obstacle Detected");
     return true;
   }
   
@@ -162,9 +152,8 @@ boolean leftObstacleSensor()
 boolean rightObstacleSensor()
 {
  
-  if ( digitalRead(RIGHT_OBSTACLE) == 0 ) // Test left sensor
+  if ( digitalRead(RIGHT_OBSTACLE) == 0 ) // Test right sensor
   {
-    Serial.println("Right Obstacle Detected");
     return true;
   }
   
@@ -177,7 +166,6 @@ int Ultrasonic()
  
   int cm=0;
   unsigned int pingTime=0;
-  Serial.print("Sonar Ping: ");  
   
   for ( int i=0; i < SAMPLE_SIZE_ULTRA; i++)
   {
@@ -191,9 +179,6 @@ int Ultrasonic()
   if ( cm == 0 || cm > MAX_PING_RANGE) 
     cm = MAX_PING_RANGE;  // Clear!
 
-  Serial.print(cm);
-  Serial.println("cm");
-  
   return cm;
 }
 
@@ -202,7 +187,6 @@ void pointLeft()
 {
   panServo.attach(PAN_PIN); 
   panServo.write(SERVO_LEFT);
-  Serial.println("Point Left");
   delay(SERVO_WAIT); // wait for servo to get there
   panServo.detach();
 }
@@ -211,7 +195,6 @@ void pointRight()
 {
   panServo.attach(PAN_PIN); 
   panServo.write(SERVO_RIGHT);
-  Serial.println("Point Right");
   delay(SERVO_WAIT); // wait for servo to get there
   panServo.detach();
 }
@@ -220,7 +203,6 @@ void pointCentre()
 {
   panServo.attach(PAN_PIN); 
   panServo.write(SERVO_CENTRE);
-  Serial.println("Point Centre");
   delay(SERVO_WAIT); // wait for servo to get there
   panServo.detach();
 }
@@ -228,8 +210,6 @@ void pointCentre()
 void pointValue(int pos)
 {
   panServo.attach(PAN_PIN);
-  Serial.print("Point Value: ");
-  Serial.println(pos);
   panServo.write(pos);
   delay(SERVO_WAIT); // wait for servo to get there
   panServo.detach();
@@ -240,7 +220,6 @@ void tiltUp()
 {
   tiltServo.attach(TILT_PIN);
   tiltServo.write(SERVO_UP);
-  Serial.println("Tilt Up");
   delay(SERVO_WAIT); // wait for servo to get there
   tiltServo.detach();
 }
@@ -249,7 +228,6 @@ void tiltDown()
 {
   tiltServo.attach(TILT_PIN);
   tiltServo.write(SERVO_DOWN);
-  Serial.println("Tilt Down");
   delay(SERVO_WAIT); // wait for servo to get there
   tiltServo.detach();
 }
@@ -258,7 +236,6 @@ void tiltCentre()
 {
   tiltServo.attach(TILT_PIN);
   tiltServo.write(SERVO_CENTRE);
-  Serial.println("Tilt Centre");
   delay(SERVO_WAIT); // wait for servo to get there
   tiltServo.detach();
 }
@@ -266,143 +243,8 @@ void tiltCentre()
 void tiltValue(int pos)
 {
   tiltServo.attach(TILT_PIN);
-  Serial.print("Tilt Value: ");
-  Serial.println(pos);
   tiltServo.write(pos);
   delay(SERVO_WAIT); // wait for servo to get there
   tiltServo.detach();
 }
-
-void testAll()
-{
-  long startTime;  // Captures startTime in clock time - time is milliseconds between them
-  long endTime;
-  
-  // ROBOTEERS this is the test all function - setup() will execute this once or it needs to be called from loop()
-  
-  Serial.println("TESTING MOVEMENT SHOULD TAKE ABOUT 10 seconds");
-  Serial.println("FULL POWER 255");
-  forward(1000,255,255);
-  halt(1000);
-  
-  reverse(1000,255,255);
-  halt(1000);
- 
-  Serial.println("HALF POWER 180");
-  forward(1000,180,180);
-  halt(1000);
-  
-  reverse(1000,180,180);
-  halt(1000);
-  
-  
- Serial.println("NOW TESTING PAN AND TILT 5 TIMES");
- Serial.println("TESTING PAN 5 TIMES - PLEASE ENSURE THIS IS A PAN ACTION");
- 
-  for ( int i=0;i<5;i++)
-  {
-    pointCentre();
-    delay(500);
-    pointLeft();
-    delay(500);
-    pointRight();
-    delay(500);
-    pointCentre();
-    
-    delay(1000);
-  }
-  
- Serial.println("TESTING TILT 5 TIMES - PLEASE ENSURE THIS IS A TILT ACTION");
- 
-  for ( int i=0;i<5;i++)
-  {
-    tiltCentre();
-    delay(500);
-    tiltUp();
-    delay(500);
-    tiltDown();
-    delay(500);
-    tiltCentre();
-    
-    delay(1000);
-  }
- 
-  
-  Serial.println("NOW TESTING OBSTACLE SENSORS FOR 30 SECONDS ");
-  Serial.println("TEST SENSOR NOW PLEASE - TILT and PAN SENSOR WILL MOVE");
-
-  startTime = millis();
-  endTime = millis();
-  
-  while(endTime-startTime < 30000)
-  {
-    
-    if ( leftObstacleSensor() == true )
-    {
-       pointLeft();
-       tiltUp();
-    }
-  
-    if ( rightObstacleSensor() == true )
-    {
-       pointRight();
-       tiltDown();
-    }
-    
-    endTime = millis();
-  }
-  
-  Serial.println("NOW TESTING ULTRASONIC SENSORS FOR 30 SECONDS ");
-  Serial.println("TEST SENSOR BY PLACING YOUR HAND OR OBJECT IN FRONT OF ULTRASONIC ( EYES)");
-  Serial.println("IF THE DISTANCE IS LESS THAN 90CM IT SHOULD PRINT");
-
-  startTime = millis();
-  endTime = millis();
-  
-  while(endTime-startTime < 30000)
-  {
-
-    int cm =  Ultrasonic();
-    
-    if ( cm < 90 ) {
-      Serial.print("Distance is: ");
-      Serial.println(cm);
-    }
-    
-    endTime = millis();
-  }
-  
-    pointCentre();
-    tiltCentre();
-  
-  Serial.println("NOW TESTING LINE FOLLOW SENSORS FOR 30 SECONDS ");
-  Serial.println("TEST SENSOR NOW PLEASE USING BLACK or WHITE for EACH SENSOR");
-
-  startTime = millis();
-  endTime = millis();
-  
-  while(endTime-startTime < 30000)
-  {
-    
-    if ( leftLineSensor() == BLACK ) 
-      Serial.println("LEFT SENSOR READS BLACK");
-   
-   
-    if ( leftLineSensor() == WHITE )    
-     Serial.println("LEFT SENSOR READS WHITE");
-    
-    if ( rightLineSensor() == BLACK ) 
-      Serial.println("RIGHT SENSOR READS BLACK");
-   
-   
-    if ( rightLineSensor() == WHITE )    
-     Serial.println("RIGHT SENSOR READS WHITE");
-    
-    endTime = millis();
-  }
-   
-}
-
-
-
 
