@@ -1,6 +1,9 @@
 #include "robo.h"
-//This is the Goal sketch.  You need to complete this to score a goal from each of the start positions.
-//Use the ultrasonic sensor to work out where the ball is and how far away, then shoot!
+
+// This is the code sketch to make the 4tronix robot score a goal.
+//                                     -------
+// Use the sensors on the robot's head to work out where the ball is and how far away, then shoot!
+// Change the code below to make the robot move how you want it to.
 
 void loop()
 {

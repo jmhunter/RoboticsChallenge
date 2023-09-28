@@ -1,6 +1,9 @@
 #include "robo.h"
-//This is a Basic movement sketch, change the code to do whatever you want!
-//Start by getting the robot to drive round in a square, a triangle and then a circle.
+
+// This is the code sketch to move the 4tronix robot around.
+//                                     -------
+// Change the code below to make the robot to move how you want it to.
+// Start by getting the robot to drive round in a square, a triangle and then a circle.
 
 void loop()
 {
@@ -14,8 +17,3 @@ void loop()
   rightSpin(1000,255);
 
 }
-
-
-
-
-

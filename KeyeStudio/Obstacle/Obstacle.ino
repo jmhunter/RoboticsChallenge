@@ -1,17 +1,29 @@
 #include "robo.h"
-//This Avoid sketch needs to be completed to navigate the obstacle course.
-//Use the 2 obstacle sensors to decide what to do in each of the 4 potential scenarios.
+
+// This is the code sketch to make the KeyeStudio robot follow a BLACK line.
+//                                     ----------
+// Use the sensors on the robot's head to decide what to do in each of the FOUR possible scenarios.
+// Change the code below to make the robot move how you want it to.
 
 void loop()
 {
 
-  if ( leftObstacleSensor() == false && rightObstacleSensor() == false )
+  if ( lookForward() == true )
   {
     //What command should you type in here?
      return;
   }
 
+  if ( lookLeft() == true )
+  {
+    //What command should you type in here?
+     return;
+  }
 
-
+  if ( lookRight() == true )
+  {
+    //What command should you type in here?
+     return;
+  }
 
 }

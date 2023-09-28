@@ -1,4 +1,4 @@
-//A set of defines which can be tweaked to reconfigure or tune the KeyeStudio robot
+// A set of defines which can be tweaked to reconfigure or tune the KeyeStudio robot
 
 // Define which Arduino pin is connected to what device
 
@@ -12,7 +12,7 @@
 
 // Line Follow Sensor Definitions
 const int LINE_LEFT = 6;    // pin for the Line Follow Sensor Left set to D6
-const int LINE_MIDDLE = 7;  // pin for the Line Follow Sensor Middle set to D7
+const int LINE_CENTRE = 7;  // pin for the Line Follow Sensor Middle set to D7
 const int LINE_RIGHT = 8;   // pin for the Line Follow Sensor Right set to D8
 int line_left_val,line_middle_val,line_right_val;  //define these variables
 
@@ -39,15 +39,15 @@ const int ULTRA_SERVO_PAN = 10; // pin for the ultrasonic pan motor set to D10
 #define ULTRA_SONAR_TRIGGER 12  // pin for the ultrasonic sensor trigger set to D12
 
 // Ultrasonic Sensor extremities of movement for the pan servo
-#define ULTRA_SERVO_PAN_LEFT  180  // the left-most position in degrees for the pan servo
-#define ULTRA_SERVO_PAN_CENTRE 90  // the centre position in degrees for the pan servo
-#define ULTRA_SERVO_PAN_RIGHT   0  // the right-most position in degrees for the pan servo
+#define ULTRA_SERVO_CENTRE     90  // the centre position in degrees for the pan servo
+#define ULTRA_SERVO_PAN_LEFT  180  // the left half way position in degrees for the pan servo
+#define ULTRA_SERVO_PAN_RIGHT   0  // the right half way position in degrees for the pan servo
 
 // Ultrasonic Sensor pan servo positional wait time
 #define ULTRA_SERVO_PAN_WAIT 200
 
-// Utrasonic Sensor sonar ping maximum range
-// #define ULTRA_SONAR_MAX_RANGE 1000 // might not be supported by SR04 library
+// Utrasonic Sensor sonar ping
+long ULTRA_SONAR_DISTANCE;  // variable for measuring distance using the Ultrasonic sensor
 
 // Ultrasonic Sensor sonar ping wait time between samples
 #define ULTRA_SONAR_WAIT 30

@@ -12,6 +12,7 @@
 
 */
 
+// robo sets up all the functions for all robot movements and sensors
 // Look in robo.h for all the #defines
 
 // Inclusion of libraries for control of robot servos and sensors
@@ -35,7 +36,7 @@ void setup()
 
 // initialize the digital pins to be used as an input for the Line Following Sensors
   pinMode(LINE_LEFT,  INPUT);  // define the pin of left line tracking sensor as INPUT
-  pinMode(LINE_MIDDLE,INPUT);  // define the pin of middle line tracking sensor as INPUT
+  pinMode(LINE_CENTRE,INPUT);  // define the pin of middle line tracking sensor as INPUT
   pinMode(LINE_RIGHT, INPUT);  // define the pin of right line tracking sensor as INPUT
 
 // initialize the digital pins to be used as an output for the Matrix Display Screen
@@ -47,7 +48,7 @@ void setup()
   Serial.println("Starting Barclays Robot");
 
 // Centre the Ultrasonic sensor servo as part of the robot set up routine
-ultraServoPulse(ULTRA_SERVO_PAN,ULTRA_SERVO_PAN_CENTRE);  // Set the angle of Ultrasonic servo to 90 degrees
+ultraServoPulse(ULTRA_SERVO_PAN,ULTRA_SERVO_CENTRE);  // Set the angle of Ultrasonic servo to 90 degrees
 }
 
 
@@ -140,23 +141,10 @@ void halt(int wait)
 
 int readLineSensor(int pin)
 {
-  int sensorSignal = 0;
-
-  for ( int i=0; i < LINE_SAMPLE_SIZE; i++ )
-  {
-    sensorSignal += analogRead(pin);// Read value from sensor
-  }
-
-  sensorSignal /= LINE_SAMPLE_SIZE;
-
-  //Always returns 0 or 1, but whether that means BLACK or WHITE can be changed in robo.h depending on the sensor version.
-  if ( sensorSignal < LINE_THRESHOLD )
-    return 0;
-
-  return 1;
+  return digitalRead(pin);
 }
 
-
+// Takes the reading from the right line sensor and returns whether it is BLACK or WHITE
 int rightLineSensor()
 {
   int val = readLineSensor(LINE_RIGHT);
@@ -164,10 +152,19 @@ int rightLineSensor()
   return val;
 }
 
+// Takes the reading from the left line sensor and returns whether it is BLACK or WHITE
 int leftLineSensor()
 {
   int val= readLineSensor(LINE_LEFT);
   Serial.println("Left Line Sensor: " + val);
+  return val;
+}
+
+// Takes the reading from the centre line sensor and returns whether it is BLACK or WHITE
+int centreLineSensor()
+{
+  int val= readLineSensor(LINE_CENTRE);
+  Serial.println("Centre Line Sensor: " + val);
   return val;
 }
 
@@ -184,36 +181,63 @@ void ultraServoPulse(int ULTRA_SERVO_PAN,int myangle)
     delayMicroseconds(pulseWidth);
     digitalWrite(ULTRA_SERVO_PAN,LOW);
     delay(20-pulseWidth/1000);
-  }  
-}
-
-
-/*
-boolean leftObstacleSensor()
-{
-
-  if ( digitalRead(LEFT_OBSTACLE) == 0 ) // Test left sensor
-  {
-    Serial.println("Left Obstacle Detected");
-    return true;
   }
-
-  return false;
 }
 
-boolean rightObstacleSensor()
+
+// Takes the reading from the Ultrasonic sensor and returns whether an obstacle is detected ahead
+boolean lookForward()
 {
-
-  if ( digitalRead(RIGHT_OBSTACLE) == 0 ) // Test left sensor
+  ultraServoPulse(ULTRA_SERVO_PAN,ULTRA_SERVO_CENTRE);         // re-centre the Ultrasonic pan servo to point forwards
+  delay(ULTRA_SONAR_WAIT);
+  ULTRA_SONAR_DISTANCE=sr04.Distance();                        // obtain the distance value detected by ultrasonic sensor
+  if((ULTRA_SONAR_DISTANCE < 20)&&(ULTRA_SONAR_DISTANCE > 0))  // if the distance is greater than 0 and less than 20 then...
   {
-    Serial.println("Right Obstacle Detected");
-    return true;
+    Serial.println("Obstacle Not Detected Ahead");
+    return false;
   }
-
-  return false;
+  Serial.println("Obstacle Detected Ahead");
+  return true;
 }
 
-int Ultrasonic()
+
+// Takes the reading from the Ultrasonic sensor and returns whether an obstacle is detected to the left
+boolean lookLeft()
+{
+  ultraServoPulse(ULTRA_SERVO_PAN,ULTRA_SERVO_PAN_LEFT);       // turn the Ultrasonic pan servo left
+  delay(ULTRA_SONAR_WAIT);
+  ULTRA_SONAR_DISTANCE=sr04.Distance();                        // obtain the distance value detected by ultrasonic sensor
+  ultraServoPulse(ULTRA_SERVO_PAN,ULTRA_SERVO_CENTRE);         // re-centre the Ultrasonic pan servo to point forwards
+
+  if((ULTRA_SONAR_DISTANCE < 20)&&(ULTRA_SONAR_DISTANCE > 0))  // if the distance is greater than 0 and less than 20 then...
+  {
+    Serial.println("Obstacle Not Detected On The Left");
+    return false;
+  }
+  Serial.println("Obstacle Detected On The Left");
+  return true;
+}
+
+
+// Takes the reading from the Ultrasonic sensor and returns whether an obstacle is detected to the right
+boolean lookRight()
+{
+  ultraServoPulse(ULTRA_SERVO_PAN,ULTRA_SERVO_PAN_RIGHT);      // turn the Ultrasonic pan servo right
+  delay(ULTRA_SONAR_WAIT);
+  ULTRA_SONAR_DISTANCE=sr04.Distance();                        // obtain the value detected by ultrasonic sensor
+  ultraServoPulse(ULTRA_SERVO_PAN,ULTRA_SERVO_CENTRE);         // re-centre the Ultrasonic pan servo to point forwards
+
+  if((ULTRA_SONAR_DISTANCE < 20)&&(ULTRA_SONAR_DISTANCE > 0))  // if the distance is greater than 0 and less than 20 then...
+  {
+    Serial.println("Obstacle Not Detected On The Right");
+    return false;
+  }
+  Serial.println("Obstacle Detected On The Right");
+  return true;
+}
+
+
+/*int Ultrasonic()
 {
 
   int cm=0;
@@ -259,9 +283,9 @@ void pointRight()
 
 void pointCentre()
 {
-  servopulse(servopin, ULTRA_SERVO_PAN_CENTRE);  // The angle of servo is set to point directly forwards
+  servopulse(servopin, ULTRA_SERVO_CENTRE);  // The angle of servo is set to point directly forwards
 //  panServo.attach(ULTRA_SONAR_PAN);
-//  panServo.write(ULTRA_SERVO_PAN_CENTRE);
+//  panServo.write(ULTRA_SERVO_CENTRE);
   Serial.println("Point Centre");
   delay(ULTRA_SERVO_WAIT); // wait for servo to get there
 //  panServo.detach();

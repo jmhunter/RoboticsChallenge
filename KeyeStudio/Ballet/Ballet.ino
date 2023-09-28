@@ -1,5 +1,9 @@
 #include "robo.h"
-// A simple sketch for doing a ballet
+
+// This is the code sketch to make the KeyeStudio robot do a chorographed dance routine.
+//                                     ----------
+// You don't need to change anything in tihs code sketch.
+// Just upload it stright to the robot.
 
 void loop()
 {

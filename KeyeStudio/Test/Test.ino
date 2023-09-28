@@ -1,21 +1,23 @@
 /* 
- * This is a test suite, to make sure your robot is working correctly.
- * 
- * To use:
- * 
- * Hold your hand in front of the obstacle sensors. The robot's head
- * should point left when the left obstacle sensor is triggered, and
- * right when the right obstacle sensor is triggered.
- * 
+This is a test suite, to make sure your KeyeStudio robot is working correctly.
+                                        ----------
+                                        
+*** THIS SKETCH NEEDS UPDATING BECAUSE THE KEYESTUDIO ROBOT HAS NO OBSTACLE SENSORS ***
+*** ALSO THE TEST SCRIPT FROM THE MOVE SKETCH HAS BEEN MOVED HERE ***
+
+To use:
+ * Hold your hand in front of the obstacle sensors.
+ * The robot's head should point left when the left obstacle sensor is triggered
+ * The robot's head should point right when the right obstacle sensor is triggered.
+
+ * Hold your hand in front of the line follower sensors.
  * The line follower sensors will move the robot's head up and down.
- * 
- * If both obstacle sensors are triggered together, the robot will
- * move forwards; if both line follower sensors are triggered together,
- * the robot will move backwards.
- * 
- * The ultrasonic sensor is not currently included in this test suite.
- * 
- */
+ 
+If both obstacle sensors are triggered together, the robot will move forwards.
+If both line follower sensors are triggered together, the robot will move backwards.
+
+The ultrasonic sensor is not currently included in this test suite.
+*/
 
 // Uncomment these lines to run the testing script
   //while(1)  // Use this to repeat forever

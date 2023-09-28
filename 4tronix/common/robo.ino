@@ -1,85 +1,55 @@
 /*
 
+  Robotics Challenge - Version History
+
   v 1.0 - 15/03/14  - Backend code for the robotics - same code master - will be overwritten
   v 1.1 - 21/08/14  - Updated to include new challenges
   v 1.2 - 23/03/15  - Cleaned up and simplified
-  v 1.3 - 10/05/16  - Updated to fix minor bugs
-
-  Robotics Challenge - - all supporting code
-
-  Also has a TestAll function you use to test all components are working
+  v 1.3 - 10/05/16  - Updated to fix minor bugs.  Also has a TestAll function you use to
+                      test all components are working
+  v 1.4 - 01/10/23  - Complete re-write to standardise the 4tronix code and variables with
+                    - the ones used by the KeyeStudio robots now the oringal 4tornix robots
+                    - are no longer avialable.
 
 */
 
-//Look in robo.h for all the #defines
+// robo sets up all the functions for all robot movements and sensors
+// Look in robo.h for all the #defines
 
 // Inclusion of libraries for control of robot servos and sensors
-#include <NewPing.h> // Sensor library for 4tronix robots
-#include <Servo.h>   // Servo library for 4tronix robots
+#include <NewPing.h> // Ultrasonic Sensor library for 4tronix robots
+#include <Servo.h>   // Ultrasonic Servo library for 4tronix robots
 
-// NewPing setup of pins and maximum distance.
-NewPing sonar(TRIGGER_PIN, ECHO_PIN, MAX_PING_RANGE);
+// NewPing library for setup of Ultraonic sensor pins and maximum distance
+NewPing sonar(ULTRA_SONAR_TRIGGER, ULTRA_SONAR_ECHO, ULTRA_SONAR_MAX_RANGE);
 
-// Pan and tilt servo objects
-Servo panServo, tiltServo;
+// Servo library for setup of Ultrasonic sensor pan and tilt servo
+Servo ultraPanServo, ultraTiltServo;
 
-// The setup routine runs once when you press reset:
+
+// The setup routine runs once when you press reset
 // This must be here to set your pins for the motor and do some initialisation
 void setup()
 
-{                
-  // initialize the digital pins we will use as an output for the Motors
-  pinMode(L1, OUTPUT);     
-  pinMode(L2, OUTPUT);     
-  pinMode(L3, OUTPUT);     
-  pinMode(L4, OUTPUT);
-      
-  Serial.begin(115200);  // Start the Serial and make sure the debug says 115200 
+{
+// initialize the digital pins to be used as an output for the Motors
+  pinMode(L1, OUTPUT);  // define PWM control pin of B motor as OUTPUT
+  pinMode(L2, OUTPUT);  // define direction control pin of B motor as OUTPUT
+  pinMode(L3, OUTPUT);  // define PWM control pin of A motor as OUTPUT
+  pinMode(L4, OUTPUT);  // define direction control pin of A motor as OUTPUT
+
+// Start the Serial device and make sure the speed is set to 115,200 baud
+  Serial.begin(115200);
   Serial.println("Starting Barclays Robot");
-  
+
+// Centre the Ultrasonic sensor pan and tilt servos as part of the robot set up routine
   tiltCentre();
   pointCentre();
-  
-  //while(1)  // Use this to repeat forever
-  // testAll();
-
-}
-
-int readLineSensor(int pin)
-{
-  int sensorSignal = 0;
-  
-  for ( int i=0; i < SAMPLE_SIZE_LINE; i++ )
-  {
-    sensorSignal += analogRead(pin);// Read value from sensor  
-  }
-   
-  sensorSignal /= SAMPLE_SIZE_LINE;
-  
-  //Always returns 0 or 1, but whether that means BLACK or WHITE can be changed in robo.h depending on the sensor version.
-  if ( sensorSignal < LINE_THRESHOLD )
-    return 0;
-    
-  return 1;  
 }
 
 
-int rightLineSensor()
-{
-  int val = readLineSensor(RIGHT_LINE);
-  Serial.println("Right Line Sensor: " + val);
-  return val;
-}
-
-int leftLineSensor()
-{
-  int val= readLineSensor(LEFT_LINE);
-  Serial.println("Left Line Sensor: " + val);
-  return val;
-}
-
-// robMove routine switches the correct inputs to the L298N for the direction selected.
-void robMove(int l1, int l2, int r1, int r2)
+// robotMove routine provides the inputs to the motors for basic robot movement
+void robotMove(int l1, int l2, int r1, int r2)
 {
   analogWrite(L1, l1);
   digitalWrite(L2, l2);
@@ -87,92 +57,155 @@ void robMove(int l1, int l2, int r1, int r2)
   digitalWrite(L4, r2);  
 }
 
-void reverse(int wait, int vSpeedLeft, int vSpeedRight)
-{
-  if ( vSpeedLeft > 255 ) 
-    vSpeedLeft = 255;
 
-  if ( vSpeedRight > 255 ) 
-    vSpeedRight = 255;
-
-  Serial.println("Moving Backwards: Speed Left and Right: " + String(vSpeedLeft) + " " + String(vSpeedRight));
-  robMove(255-vSpeedLeft, HIGH, 255-vSpeedRight, HIGH);    // when reversing, the speed needs to be opposite, so subtract from 255
-  delay(wait);
-  
-  //Amended to stop after the wait time
-  halt(0);
-}
-
+// forward basic movement routine
 void forward(int wait,int vSpeedLeft,int vSpeedRight)
+
+// ensures no value over 255 can be used for forward movement
 {
-  if ( vSpeedLeft > 255 ) 
+  if ( vSpeedLeft > 255 )
     vSpeedLeft = 255;
 
-  if ( vSpeedRight > 255 ) 
+  if ( vSpeedRight > 255 )
     vSpeedRight = 255;
 
   Serial.println("Moving Forwards: Speed Left and Right: " + String(vSpeedLeft) + " " + String(vSpeedRight));
-  robMove(vSpeedLeft, LOW, vSpeedRight, LOW);
+  robotMove(vSpeedLeft, LOW, vSpeedRight, LOW);
   delay(wait);
-  
-  //Amended to stop after the wait time
+
+//stop forward movement routine after the wait time
   halt(0);
 }
 
+
+// reverse basic movement routine
+void reverse(int wait, int vSpeedLeft, int vSpeedRight)
+
+// ensures no value over 255 can be used for reverse movement
+{
+  if ( vSpeedLeft > 255 )
+    vSpeedLeft = 255;
+
+  if ( vSpeedRight > 255 )
+    vSpeedRight = 255;
+
+  Serial.println("Moving Backwards: Speed Left and Right: " + String(vSpeedLeft) + " " + String(vSpeedRight));
+// when reversing, the speed needs to be opposite, so subtract speed from 255
+  robotMove(255-vSpeedLeft, HIGH, 255-vSpeedRight, HIGH);
+  delay(wait);
+
+//stop reverse movement routine after the wait time
+  halt(0);
+}
+
+
+// turning right basic movement routine
 void rightSpin(int wait, int vSpeed)
+
 {
   Serial.println("Spinning right");
-  robMove(vSpeed, LOW, 255 - vSpeed, HIGH);
+// for the motor on the right, the speed needs to be opposite, so subtract speed from 255
+  robotMove(vSpeed, LOW, 255 - vSpeed, HIGH);
   delay(wait);
   
-  //Amended to stop after the wait time
+//stop turning right movement routine after the wait time
   halt(0);
 }
 
+
+// turning left basic movement routine
 void leftSpin(int wait,int vSpeed)
+
 {
   Serial.println("Spinning left");
-  robMove(255 - vSpeed, HIGH, vSpeed, LOW);
+// for the motor on the left, the speed needs to be opposite, so subtract speed from 255
+  robotMove(255 - vSpeed, HIGH, vSpeed, LOW);
   delay(wait);
-  
-  //Amended to stop after the wait time
+
+
+//stop turning left movement routine after the wait time
   halt(0);
 }
 
 
+
+// stopping all basic movement routine
 void halt(int wait)
+
 {
   Serial.println("Stopping");
-  robMove(0, LOW, 0, LOW);
+  robotMove(0, LOW, 0, LOW);
   delay(wait);
 }
 
 
+
+// LineSensor routines provide the inputs to the line sensors to detect dark lines on a lighter background
+
+int readLineSensor(int pin)
+{
+  int sensorSignal = 0;
+  
+  for ( int i=0; i < LINE_SAMPLE_SIZE; i++ )
+  {
+    sensorSignal += analogRead(pin);  // Read value from sensor  
+  }
+   
+  sensorSignal /= LINE_SAMPLE_SIZE;
+  
+// Sensor always returns 0 or 1, but whether that means BLACK or WHITE can be changed in robo.h depending on the sensor version
+  if ( sensorSignal < LINE_THRESHOLD )
+    return 0;
+    
+  return 1;  
+}
+
+// Takes the reading from the right line sensor and returns whether it is BLACK or WHITE
+int rightLineSensor()
+{
+  int val = readLineSensor(LINE_RIGHT);
+  Serial.println("Right Line Sensor: " + val);
+  return val;
+}
+
+// Takes the reading from the left line sensor and returns whether it is BLACK or WHITE
+int leftLineSensor()
+{
+  int val= readLineSensor(LINE_LEFT);
+  Serial.println("Left Line Sensor: " + val);
+  return val;
+}
+
+
+// ObstacleSensor routines provide the inputs to the infrared obstacle sensors to detect the presence of an object
 boolean leftObstacleSensor()
 {
- 
-  if ( digitalRead(LEFT_OBSTACLE) == 0 ) // Test left sensor
+
+// Takes the reading from the left obstcle sensor and returns an object is detected
+  if ( digitalRead(OBSTACLE_LEFT) == 0 )
   {
     Serial.println("Left Obstacle Detected");
     return true;
   }
-  
+
   return false;
 }
 
 boolean rightObstacleSensor()
 {
- 
-  if ( digitalRead(RIGHT_OBSTACLE) == 0 ) // Test left sensor
+
+// Takes the reading from the right obstcle sensor and returns an object is detected
+  if ( digitalRead(OBSTACLE_RIGHT) == 0 )
   {
     Serial.println("Right Obstacle Detected");
     return true;
   }
-  
+
   return false;
 }
 
 
+// UltraSonic routines provide the inputs to the Ultrasonic sensor and pan motor for detection and movement of the Ultrasonic head
 int Ultrasonic()
 {
  
@@ -180,17 +213,17 @@ int Ultrasonic()
   unsigned int pingTime=0;
   Serial.print("Sonar Ping: ");  
   
-  for ( int i=0; i < SAMPLE_SIZE_ULTRA; i++)
+  for ( int i=0; i < ULTRA_SONAR_SAMPLE_SIZE; i++)
   {
-    pingTime = sonar.ping(); // Send ping, get ping time in microseconds (uS).
-    delay(SONAR_WAIT);                      // Wait between pings, 20ms should be the shortest delay between pings.
+    pingTime = sonar.ping();  // Send ping, get ping time in microseconds (uS).
+    delay(ULTRA_SONAR_WAIT);  // Wait between pings, 20ms should be the shortest delay between pings.
     cm += pingTime / US_ROUNDTRIP_CM;
   }
   
-  cm /= SAMPLE_SIZE_ULTRA;
+  cm /= ULTRA_SONAR_SAMPLE_SIZE;
   
-  if ( cm == 0 || cm > MAX_PING_RANGE) 
-    cm = MAX_PING_RANGE;  // Clear!
+  if ( cm == 0 || cm > ULTRA_SONAR_MAX_RANGE) 
+    cm = ULTRA_SONAR_MAX_RANGE;  // Clear!
 
   Serial.print(cm);
   Serial.println("cm");
@@ -199,81 +232,98 @@ int Ultrasonic()
 }
 
 
-void pointLeft()
-{
-  panServo.attach(PAN_PIN); 
-  panServo.write(SERVO_LEFT);
-  Serial.println("Point Left");
-  delay(SERVO_WAIT); // wait for servo to get there
-  panServo.detach();
-}
+// Ultrasonic routines provide the inputs to the turn Ultrasonic servo motors to detect the presence of an object
 
-void pointRight()
-{
-  panServo.attach(PAN_PIN); 
-  panServo.write(SERVO_RIGHT);
-  Serial.println("Point Right");
-  delay(SERVO_WAIT); // wait for servo to get there
-  panServo.detach();
-}
-
+// Ultrasonic pan servo centering routine
 void pointCentre()
 {
-  panServo.attach(PAN_PIN); 
-  panServo.write(SERVO_CENTRE);
+  ultraPanServo.attach(ULTRA_SERVO_PAN);
+  ultraPanServo.write(ULTRA_SERVO_CENTRE);
   Serial.println("Point Centre");
-  delay(SERVO_WAIT); // wait for servo to get there
-  panServo.detach();
+  delay(ULTRA_SERVO_WAIT); // wait for servo to get there
+  ultraPanServo.detach();
 }
 
+
+// Ultrasonic pan servo pointing left routine
+void pointLeft()
+{
+  ultraPanServo.attach(ULTRA_SERVO_PAN);
+  ultraPanServo.write(ULTRA_SERVO_PAN_LEFT);
+  Serial.println("Point Left");
+  delay(ULTRA_SERVO_WAIT); // wait for servo to get there
+  ultraPanServo.detach();
+}
+
+
+// Ultrasonic pan servo pointing right routine
+void pointRight()
+{
+  ultraPanServo.attach(ULTRA_SERVO_PAN);
+  ultraPanServo.write(ULTRA_SERVO_PAN_RIGHT);
+  Serial.println("Point Right");
+  delay(ULTRA_SERVO_WAIT); // wait for servo to get there
+  ultraPanServo.detach();
+}
+
+
+// Ultrasonic pan servo pointing to a specific value routine
 void pointValue(int pos)
 {
-  panServo.attach(PAN_PIN);
+  ultraPanServo.attach(ULTRA_SERVO_PAN);
   Serial.print("Point Value: ");
   Serial.println(pos);
-  panServo.write(pos);
-  delay(SERVO_WAIT); // wait for servo to get there
-  panServo.detach();
+  ultraPanServo.write(pos);
+  delay(ULTRA_SERVO_WAIT); // wait for servo to get there
+  ultraPanServo.detach();
 }
 
 
-void tiltUp()
-{
-  tiltServo.attach(TILT_PIN);
-  tiltServo.write(SERVO_UP);
-  Serial.println("Tilt Up");
-  delay(SERVO_WAIT); // wait for servo to get there
-  tiltServo.detach();
-}
-
-void tiltDown()
-{
-  tiltServo.attach(TILT_PIN);
-  tiltServo.write(SERVO_DOWN);
-  Serial.println("Tilt Down");
-  delay(SERVO_WAIT); // wait for servo to get there
-  tiltServo.detach();
-}
-
+// Ultrasonic tilt servo centering routine
 void tiltCentre()
 {
-  tiltServo.attach(TILT_PIN);
-  tiltServo.write(SERVO_CENTRE);
+  ultraTiltServo.attach(ULTRA_SERVO_TILT);
+  ultraTiltServo.write(ULTRA_SERVO_CENTRE);
   Serial.println("Tilt Centre");
-  delay(SERVO_WAIT); // wait for servo to get there
-  tiltServo.detach();
+  delay(ULTRA_SERVO_WAIT); // wait for servo to get there
+  ultraTiltServo.detach();
 }
 
+
+// Ultrasonic tilt servo pointing up routine
+void tiltUp()
+{
+  ultraTiltServo.attach(ULTRA_SERVO_TILT);
+  ultraTiltServo.write(ULTRA_SERVO_TILT_UP);
+  Serial.println("Tilt Up");
+  delay(ULTRA_SERVO_WAIT); // wait for servo to get there
+  ultraTiltServo.detach();
+}
+
+
+// Ultrasonic tilt servo pointing down routine
+void tiltDown()
+{
+  ultraTiltServo.attach(ULTRA_SERVO_TILT);
+  ultraTiltServo.write(ULTRA_SERVO_TILT_DOWN);
+  Serial.println("Tilt Down");
+  delay(ULTRA_SERVO_WAIT); // wait for servo to get there
+  ultraTiltServo.detach();
+}
+
+
+// Ultrasonic tilt servo pointing to a specific position routine
 void tiltValue(int pos)
 {
-  tiltServo.attach(TILT_PIN);
+  ultraTiltServo.attach(ULTRA_SERVO_TILT);
   Serial.print("Tilt Value: ");
   Serial.println(pos);
-  tiltServo.write(pos);
-  delay(SERVO_WAIT); // wait for servo to get there
-  tiltServo.detach();
+  ultraTiltServo.write(pos);
+  delay(ULTRA_SERVO_WAIT); // wait for servo to get there
+  ultraTiltServo.detach();
 }
 
+/*
 void testAll()
 {
   long startTime;  // Captures startTime in clock time - time is milliseconds between them
@@ -403,3 +453,4 @@ void testAll()
   }
    
 }
+*/

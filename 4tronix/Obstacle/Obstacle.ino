@@ -1,6 +1,9 @@
 #include "robo.h"
-//This Avoid sketch needs to be completed to navigate the obstacle course.
-//Use the 2 obstacle sensors to decide what to do in each of the 4 potential scenarios.
+
+// This is the code sketch to make the 4tronix robot follow a BLACK line.
+//                                     -------
+// Use the red and yellow sensors on the front of the robot to decide what to do in each of the FOUR possible scenarios.
+// Change the code below to make the robot move how you want it to.
 
 void loop()
 {
