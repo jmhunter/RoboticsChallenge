@@ -10,7 +10,7 @@ void loop()
 
   if (leftLineSensor() == BLACK && rightLineSensor() == BLACK )
   {
-    forward(1000,255,255);
+    //What command should you type in here?
     return;
   }
 

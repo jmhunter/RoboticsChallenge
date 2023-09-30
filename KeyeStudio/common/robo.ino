@@ -15,18 +15,10 @@
 // robo sets up all the functions for all robot movements and sensors
 // Look in robo.h for all the #defines
 
-// Inclusion of libraries for control of robot servos and sensors
-#include <SR04.h>    // Ultrasonic Sensor library for KeyeStudio robots
-
-
-// SR04 library for setup of Ultrasonic Sensor
-SR04 sr04 = SR04(ULTRA_SONAR_TRIGGER, ULTRA_SONAR_ECHO);
-
 
 // The setup routine runs once when you press reset
 // This must be here to set your pins for the motor and do some initialisation
 void setup()
-
 {
 // initialize the digital pins to be used as an output for the Motors
   pinMode(L1, OUTPUT);  // define PWM control pin of B motor as OUTPUT
@@ -35,13 +27,13 @@ void setup()
   pinMode(L4, OUTPUT);  // define direction control pin of A motor as OUTPUT
 
 // initialize the digital pins to be used as an input for the Line Following Sensors
-  pinMode(LINE_LEFT,  INPUT);  // define the pin of left line tracking sensor as INPUT
-  pinMode(LINE_CENTRE,INPUT);  // define the pin of middle line tracking sensor as INPUT
+  pinMode(LINE_LEFT,   INPUT);  // define the pin of left line tracking sensor as INPUT
+  pinMode(LINE_CENTRE, INPUT);  // define the pin of middle line tracking sensor as INPUT
   pinMode(LINE_RIGHT, INPUT);  // define the pin of right line tracking sensor as INPUT
 
 // initialize the digital pins to be used as an output for the Matrix Display Screen
-  pinMode(MATRIX_CLOCK,  OUTPUT);  // define the pin of matrix clock as OUTPUT
-  pinMode(MATRIX_DISPLAY,OUTPUT);  // define the pin of matrix display to OUTPUT
+  pinMode(DISPLAY_CLOCK, OUTPUT);  // define the pin of matrix clock as OUTPUT
+  pinMode(DISPLAY_ECHO,  OUTPUT);  // define the pin of matrix display to OUTPUT
 
 // Start the Serial device and make sure the speed is set to 115,200 baud
   Serial.begin(115200);
@@ -73,8 +65,9 @@ void forward(int wait,int vSpeedLeft,int vSpeedRight)
   if ( vSpeedRight > 255 )
     vSpeedRight = 255;
 
+  matrix_display(front);                           // show the forward pattern on the LED matrix display
   Serial.println("Moving Forwards: Speed Left and Right: " + String(vSpeedLeft) + " " + String(vSpeedRight));
-  robotMove(vSpeedLeft, HIGH, vSpeedRight, HIGH);
+  robotMove(vSpeedLeft, HIGH, vSpeedRight, HIGH);  // turn the left and right motors forwards
   delay(wait);
 
 //stop forward movement routine after the wait time
@@ -93,8 +86,9 @@ void reverse(int wait, int vSpeedLeft, int vSpeedRight)
   if ( vSpeedRight > 255 )
     vSpeedRight = 255;
 
+  matrix_display(back);                          // show the reverse pattern on the LED matrix display
   Serial.println("Moving Backwards: Speed Left and Right: " + String(vSpeedLeft) + " " + String(vSpeedRight));
-  robotMove(vSpeedLeft, LOW, vSpeedRight, LOW);
+  robotMove(vSpeedLeft, LOW, vSpeedRight, LOW);  // turn the left and right motors backwards
   delay(wait);
 
 //stop reverse movement routine after the wait time
@@ -102,24 +96,12 @@ void reverse(int wait, int vSpeedLeft, int vSpeedRight)
 }
 
 
-// turning right basic movement routine
-void rightSpin(int wait, int vSpeed)
-
-{
-  Serial.println("Spinning right");
-  robotMove(vSpeed, HIGH, vSpeed, LOW);
-  delay(wait);
-
-//stop turning right movement routine after the wait time
-  halt(0);
-}
-
 // turning left basic movement routine
 void leftSpin(int wait,int vSpeed)
-
 {
+  matrix_display(left);                  // show the left turn pattern on the LED matrix display
   Serial.println("Spinning left");
-  robotMove(vSpeed, LOW, vSpeed, HIGH);
+  robotMove(vSpeed, LOW, vSpeed, HIGH);  // turn the left motors backwards and the right motors forwards
   delay(wait);
   
 //stop turning left movement routine after the wait time
@@ -127,13 +109,88 @@ void leftSpin(int wait,int vSpeed)
 }
 
 
+// turning right basic movement routine
+void rightSpin(int wait, int vSpeed)
+{
+  matrix_display(right);                 // show the right turn pattern on the LED matrix display
+  Serial.println("Spinning right");
+  robotMove(vSpeed, HIGH, vSpeed, LOW);  // turn the right motors backwards and the left motors forwards
+  delay(wait);
+
+//stop turning right movement routine after the wait time
+  halt(0);
+}
+
+
 // stopping all basic movement routine
 void halt(int wait)
-
 {
+  matrix_display(clear);                // show the right turn pattern on the LED matrix display
   Serial.println("Stopping");
-  robotMove(0, LOW, 0, LOW);
+  robotMove(0, LOW, 0, LOW);             // stop both left and right motors
   delay(wait);
+}
+
+
+// IIC routines is used for the LED dot matrix display
+void matrix_display(unsigned char matrix_value[])
+{
+  IIC_start();  //the function to call the data transmission
+  IIC_send(0xc0);  //Select address
+  for(int i = 0;i < 16;i++) //Pattern data has 16 bytes
+  {
+    IIC_send(matrix_value[i]); //data to convey patterns
+  }
+  IIC_end();   //end the transmission of patterns data
+  IIC_start();
+  IIC_send(0x8A);  //display control, set pulse width to 4/16
+  IIC_end();
+}
+
+//  the condition that data transmission starts  
+void IIC_start()
+{
+  digitalWrite(DISPLAY_CLOCK,HIGH);
+  delayMicroseconds(3);
+  digitalWrite(DISPLAY_ECHO,HIGH);
+  delayMicroseconds(3);
+  digitalWrite(DISPLAY_ECHO,LOW);
+  delayMicroseconds(3);
+}
+
+// transmit data
+void IIC_send(unsigned char send_data)
+{
+  for(char i = 0;i < 8;i++)  //Every character has 8 bits
+  {
+    digitalWrite(DISPLAY_CLOCK,LOW);  //pull down the DISPLAY_CLOCK to change the signal of SDA
+    delayMicroseconds(3);
+    if(send_data & 0x01)  //1 or 0 of byte  is used to set high and low level of DISPLAY_ECHO
+    {
+      digitalWrite(DISPLAY_ECHO,HIGH);
+    }
+    else
+    {
+      digitalWrite(DISPLAY_ECHO,LOW);
+    }
+    delayMicroseconds(3);
+    digitalWrite(DISPLAY_CLOCK,HIGH); //Pull up DISPLAY_CLOCK to stop data transmission
+    delayMicroseconds(3);
+    send_data = send_data >> 1;  //Detect bit by bit, so move the data right by one bit
+  }
+}
+
+//the sign that data transmission ends 
+void IIC_end()
+{
+  digitalWrite(DISPLAY_CLOCK,LOW);
+  delayMicroseconds(3);
+  digitalWrite(DISPLAY_ECHO,LOW);
+  delayMicroseconds(3);
+  digitalWrite(DISPLAY_CLOCK,HIGH);
+  delayMicroseconds(3);
+  digitalWrite(DISPLAY_ECHO,HIGH);
+  delayMicroseconds(3);
 }
 
 
@@ -183,122 +240,3 @@ void ultraServoPulse(int ULTRA_SERVO_PAN,int myangle)
     delay(20-pulseWidth/1000);
   }
 }
-
-
-// Takes the reading from the Ultrasonic sensor and returns whether an obstacle is detected ahead
-boolean lookForward()
-{
-  ultraServoPulse(ULTRA_SERVO_PAN,ULTRA_SERVO_CENTRE);         // re-centre the Ultrasonic pan servo to point forwards
-  delay(ULTRA_SONAR_WAIT);
-  ULTRA_SONAR_DISTANCE=sr04.Distance();                        // obtain the distance value detected by ultrasonic sensor
-  if((ULTRA_SONAR_DISTANCE < 20)&&(ULTRA_SONAR_DISTANCE > 0))  // if the distance is greater than 0 and less than 20 then...
-  {
-    Serial.println("Obstacle Not Detected Ahead");
-    return false;
-  }
-  Serial.println("Obstacle Detected Ahead");
-  return true;
-}
-
-
-// Takes the reading from the Ultrasonic sensor and returns whether an obstacle is detected to the left
-boolean lookLeft()
-{
-  ultraServoPulse(ULTRA_SERVO_PAN,ULTRA_SERVO_PAN_LEFT);       // turn the Ultrasonic pan servo left
-  delay(ULTRA_SONAR_WAIT);
-  ULTRA_SONAR_DISTANCE=sr04.Distance();                        // obtain the distance value detected by ultrasonic sensor
-  ultraServoPulse(ULTRA_SERVO_PAN,ULTRA_SERVO_CENTRE);         // re-centre the Ultrasonic pan servo to point forwards
-
-  if((ULTRA_SONAR_DISTANCE < 20)&&(ULTRA_SONAR_DISTANCE > 0))  // if the distance is greater than 0 and less than 20 then...
-  {
-    Serial.println("Obstacle Not Detected On The Left");
-    return false;
-  }
-  Serial.println("Obstacle Detected On The Left");
-  return true;
-}
-
-
-// Takes the reading from the Ultrasonic sensor and returns whether an obstacle is detected to the right
-boolean lookRight()
-{
-  ultraServoPulse(ULTRA_SERVO_PAN,ULTRA_SERVO_PAN_RIGHT);      // turn the Ultrasonic pan servo right
-  delay(ULTRA_SONAR_WAIT);
-  ULTRA_SONAR_DISTANCE=sr04.Distance();                        // obtain the value detected by ultrasonic sensor
-  ultraServoPulse(ULTRA_SERVO_PAN,ULTRA_SERVO_CENTRE);         // re-centre the Ultrasonic pan servo to point forwards
-
-  if((ULTRA_SONAR_DISTANCE < 20)&&(ULTRA_SONAR_DISTANCE > 0))  // if the distance is greater than 0 and less than 20 then...
-  {
-    Serial.println("Obstacle Not Detected On The Right");
-    return false;
-  }
-  Serial.println("Obstacle Detected On The Right");
-  return true;
-}
-
-
-/*int Ultrasonic()
-{
-
-  int cm=0;
-  unsigned int pingTime=0;
-  Serial.print("Sonar Ping: ");
-
-  for ( int i=0; i < ULTRA_SONAR_SAMPLE_SIZE; i++)
-  {
-    pingTime = sonar.ping(); // Send ping, get ping time in microseconds (uS).
-    delay(ULTRA_SONAR_WAIT);                      // Wait between pings, 20ms should be the shortest delay between pings.
-    cm += pingTime / US_ROUNDTRIP_CM;
-  }
-
-  cm /= ULTRA_SONAR_SAMPLE_SIZE;
-
-  if ( cm == 0 || cm > ULTRA_SONAR_MAX_RANGE)
-    cm = ULTRA_SONAR_MAX_RANGE;  // Clear!
-
-  Serial.print(cm);
-  Serial.println("cm");
-
-  return cm;
-}
-
-
-void pointLeft()
-{
-  panServo.attach(ULTRA_SERVO_PAN);
-  panServo.write(ULTRA_SERVO_PAN_LEFT);
-  Serial.println("Point Left");
-  delay(ULTRA_SERVO_WAIT); // wait for servo to get there
-  panServo.detach();
-}
-
-void pointRight()
-{
-  panServo.attach(ULTRA_SERVO_PAN);
-  panServo.write(ULTRA_SERVO_PAN_RIGHT);
-  Serial.println("Point Right");
-  delay(ULTRA_SERVO_WAIT); // wait for servo to get there
-  panServo.detach();
-}
-
-void pointCentre()
-{
-  servopulse(servopin, ULTRA_SERVO_CENTRE);  // The angle of servo is set to point directly forwards
-//  panServo.attach(ULTRA_SONAR_PAN);
-//  panServo.write(ULTRA_SERVO_CENTRE);
-  Serial.println("Point Centre");
-  delay(ULTRA_SERVO_WAIT); // wait for servo to get there
-//  panServo.detach();
-}
-
-void pointValue(int pos)
-{
-  panServo.attach(ULTRA_SERVO_PAN);
-  Serial.print("Point Value: ");
-  Serial.println(pos);
-  panServo.write(pos);
-  delay(ULTRA_SERVO_WAIT); // wait for servo to get there
-  panServo.detach();
-}
-
-*/
