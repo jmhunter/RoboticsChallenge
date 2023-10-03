@@ -14,7 +14,7 @@
 const int LINE_LEFT = 6;    // pin for the Line Follow Sensor Left set to D6
 const int LINE_CENTRE = 7;  // pin for the Line Follow Sensor Middle set to D7
 const int LINE_RIGHT = 8;   // pin for the Line Follow Sensor Right set to D8
-int line_left_val,line_middle_val,line_right_val;  //define these variables
+int line_left_val,line_middle_val,line_right_val;  // returning values from line sensors
 
 // If the line follower code needs reversing then set this (new sensors are reversed!)
 #define REVERSE_LF true
@@ -46,8 +46,8 @@ SR04 sr04 = SR04(ULTRA_SONAR_ECHO,ULTRA_SONAR_TRIGGER);
 
 // Ultrasonic Sensor extremities of movement for the pan servo
 #define ULTRA_SERVO_CENTRE     90  // the centre position in degrees for the pan servo
-#define ULTRA_SERVO_PAN_LEFT  180  // the left half way position in degrees for the pan servo
-#define ULTRA_SERVO_PAN_RIGHT   0  // the right half way position in degrees for the pan servo
+#define ULTRA_SERVO_PAN_LEFT  135  // the left half way position in degrees for the pan servo
+#define ULTRA_SERVO_PAN_RIGHT  45  // the right half way position in degrees for the pan servo
 
 // Ultrasonic Sensor pan servo positional wait time
 #define ULTRA_SERVO_PAN_WAIT 200
@@ -60,6 +60,9 @@ long ULTRA_SONAR_DISTANCE,distance_left,distance_right;  // variables for measur
 
 // Ultrasonic Sensor number of times to check the sensor for an average reading
 #define ULTRA_SONAR_SAMPLE_SIZE 5
+
+// What distance counts as 'there is an obstacle'
+#define ULTRA_SONAR_THRESHOLD 50
 
 
 // Matrix Display Definitions

@@ -29,7 +29,7 @@ void setup()
 // initialize the digital pins to be used as an input for the Line Following Sensors
   pinMode(LINE_LEFT,   INPUT);  // define the pin of left line tracking sensor as INPUT
   pinMode(LINE_CENTRE, INPUT);  // define the pin of middle line tracking sensor as INPUT
-  pinMode(LINE_RIGHT, INPUT);  // define the pin of right line tracking sensor as INPUT
+  pinMode(LINE_RIGHT, INPUT);   // define the pin of right line tracking sensor as INPUT
 
 // initialize the digital pins to be used as an output for the Matrix Display Screen
   pinMode(DISPLAY_CLOCK, OUTPUT);  // define the pin of matrix clock as OUTPUT
@@ -239,4 +239,15 @@ void ultraServoPulse(int ULTRA_SERVO_PAN,int myangle)
     digitalWrite(ULTRA_SERVO_PAN,LOW);
     delay(20-pulseWidth/1000);
   }
+}
+
+int leftObstacleSensor() {
+      matrix_display(left);                                 // show the left turn pattern on the led matrix display
+      ultraServoPulse(ULTRA_SERVO_PAN,ULTRA_SERVO_PAN_LEFT);  // rotate pan servo to the left
+      return (sr04.Distance()<ULTRA_SONAR_THRESHOLD);
+}
+int rightObstacleSensor() {
+      matrix_display(right);
+      ultraServoPulse(ULTRA_SERVO_PAN,ULTRA_SERVO_PAN_RIGHT);  // rotate pan servo to the left
+      return (sr04.Distance()<ULTRA_SONAR_THRESHOLD);
 }
