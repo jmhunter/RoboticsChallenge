@@ -41,6 +41,7 @@ void setup()
 
 // Centre the Ultrasonic sensor servo as part of the robot set up routine
 ultraServoPulse(ULTRA_SERVO_PAN,ULTRA_SERVO_CENTRE);  // Set the angle of Ultrasonic servo to 90 degrees
+delay(100); // Match 4Tronix behaviour by adding startup delay
 }
 
 
