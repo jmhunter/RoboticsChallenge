@@ -2,6 +2,7 @@
 
 // Define which Arduino pin is connected to which sensor or servo
 
+#define ROBOT_TYPE 4Tronix
 
 // Directional Servo Motor Definitions
 #define L1 6   // Motor L1 - pin for the PWM control pin of B motor set to D6
