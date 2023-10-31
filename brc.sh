@@ -102,7 +102,7 @@ if [ $localRefresh == false ]; then
 	# Remove all old files; do a brand new clone and deal with it 
 	rm -rf RoboticsChallenge
 	git clone $MASTER_LOCATION
- 	git checkout keyestudio
+ 	cd RoboticsChallenge && git checkout keyestudio
 
 else
 	echo "This will be a local refresh - all sketches will be deleted"
