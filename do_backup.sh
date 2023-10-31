@@ -1,7 +1,14 @@
-#!/bin/sh
+#!/bin/bash
+
+if [ "$1" == "" ]; then
+	TARGET=master1
+else
+ 	TARGET=$1
+fi
+
 cat <<__EOF__
 
-About to update master image (hosted online) from local laptop
+About to update ${TARGET} image (hosted online) from local laptop
 
 You will need to enter the local password for the robot user, when prompted
 by sudo below - and then also the remote password for the master image (twice),
@@ -27,12 +34,12 @@ convert ~/Customisations/Robot1-master.png \
 sudo rsync -avxPz --delete \
 	--exclude=lost+found/ \
 	/boot/ \
-	robot-update@robot01.ninja.org.uk::backup_master1_boot/  && \
+	robot-update@robot01.ninja.org.uk::backup_${TARGET}_boot/  && \
 sudo rsync -avxPz --delete \
 	--exclude=lost+found/ \
 	--exclude=/tmp/ \
 	/ \
-	robot-update@robot01.ninja.org.uk::backup_master1_/
+	robot-update@robot01.ninja.org.uk::backup_${TARGET}_/
 retval=$?
 
 if [ $retval -eq 0 ]; then
