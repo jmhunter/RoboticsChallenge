@@ -6,7 +6,7 @@
 # the user thats been used to run the config
 #
 
-MASTER_LOCATION="https://github.com/simonwilmot/RoboticsChallenge.git"
+MASTER_LOCATION="https://github.com/jmhunter/RoboticsChallenge.git"
 
 confirmLocal () {
     # call with a prompt string or use a default
@@ -102,6 +102,7 @@ if [ $localRefresh == false ]; then
 	# Remove all old files; do a brand new clone and deal with it 
 	rm -rf RoboticsChallenge
 	git clone $MASTER_LOCATION
+ 	git checkout keyestudio
 
 else
 	echo "This will be a local refresh - all sketches will be deleted"
