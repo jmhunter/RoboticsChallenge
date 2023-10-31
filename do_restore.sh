@@ -1,7 +1,14 @@
 #!/bin/sh
+
+if [ "$1" == "" ]; then
+	TARGET=master1
+else
+ 	TARGET=$1
+fi
+
 cat <<__EOF__
 
-About to restore entire laptop from master image (hosted online)
+About to restore entire laptop from ${TARGET} image (hosted online)
 
 You will need to enter the local password for the robot user, when prompted
 by sudo below.
@@ -11,12 +18,12 @@ __EOF__
 sudo RSYNC_PASSWORD=roboteer325 \
 	rsync -avxPz --delete \
 	--exclude=lost+found/ \
-	robot-restore@robot01.ninja.org.uk::restore_master1_boot/ \
+	robot-restore@robot01.ninja.org.uk::restore_${TARGET}_boot/ \
 	/boot/ && \
 sudo RSYNC_PASSWORD=roboteer325 \
 	rsync -avxPz --delete \
 	--exclude=lost+found/ \
-	robot-restore@robot01.ninja.org.uk::restore_master1_/ \
+	robot-restore@robot01.ninja.org.uk::restore_${TARGET}_/ \
 	/
 retval=$?
 
