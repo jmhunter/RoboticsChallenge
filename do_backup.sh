@@ -38,6 +38,7 @@ sudo rsync -avxPz --delete \
 sudo rsync -avxPz --delete \
 	--exclude=lost+found/ \
 	--exclude=/tmp/ \
+ 	--exclude=/boot/ \
 	/ \
 	robot-update@robot01.ninja.org.uk::backup_${TARGET}_/
 retval=$?
