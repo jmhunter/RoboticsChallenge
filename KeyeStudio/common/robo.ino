@@ -48,6 +48,12 @@ void setup()
 // robotMove routine provides the inputs to the motors for basic robot movement
 void robotMove(int l1, int l2, int r1, int r2)
 {
+#if ROBOTMODEL == KEYESTUDIO_0559
+  // For Keyestudio 0559 robots, the PWM must be adjusted for the reverse direction (!!!)
+  if(l2==HIGH) l1=255-l1;
+  if(r2==HIGH) r1=255-r1;
+ #endif
+
   analogWrite(L1, l1);
   digitalWrite(L2, l2);
   analogWrite(L3, r1);
@@ -206,7 +212,7 @@ int readLineSensor(int pin)
 int leftLineSensor()
 {
   int val= readLineSensor(LINE_LEFT);
-  Serial.println("Left Line Sensor: " + val);
+  Serial.println("Left Line Sensor: " + String(val));
   return val;
 }
 
@@ -214,7 +220,7 @@ int leftLineSensor()
 int rightLineSensor()
 {
   int val = readLineSensor(LINE_RIGHT);
-  Serial.println("Right Line Sensor: " + val);
+  Serial.println("Right Line Sensor: " + String(val));
   return val;
 }
 

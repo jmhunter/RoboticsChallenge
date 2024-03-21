@@ -2,7 +2,30 @@
 
 // Define which Arduino pin is connected to what device
 
+// Which robot variant is this?
+#define ROBOTMODEL KEYESTUDIO_0559
+//#define ROBOTMODEL KEYESTUDIO_0470
+//#define ROBOTMODEL 4TRONIX
 
+
+#if ROBOTMODEL == KEYESTUDIO_0559
+// Directional Servo Motor Definitions
+#define L1 5  // Motor L1 - pin for the PWM control pin of B motor
+#define L2 2  // Motor L2 - pin for the direction control pin of B motor
+#define L3 6  // Motor L3 - pin for the PWM control pin of A motor
+#define L4 4  // Motor L4 - pin for the direction control pin of A motor
+
+
+// Line Follow Sensor Definitions
+const int LINE_LEFT = 11;    // pin for the Line Follow Sensor Left
+const int LINE_CENTRE = 7;  // pin for the Line Follow Sensor Middle
+const int LINE_RIGHT = 8;   // pin for the Line Follow Sensor Right
+
+// If the line follower code needs reversing then set this (new sensors are reversed!)
+#define REVERSE_LF true
+
+
+#elif ROBOTMODEL == KEYESTUDIO_0470
 // Directional Servo Motor Definitions
 #define L1 5  // Motor L1 - pin for the PWM control pin of B motor set to D5
 #define L2 4  // Motor L2 - pin for the direction control pin of B motor set to D4
@@ -14,10 +37,18 @@
 const int LINE_LEFT = 6;    // pin for the Line Follow Sensor Left set to D6
 const int LINE_CENTRE = 7;  // pin for the Line Follow Sensor Middle set to D7
 const int LINE_RIGHT = 8;   // pin for the Line Follow Sensor Right set to D8
-int line_left_val,line_middle_val,line_right_val;  // returning values from line sensors
 
 // If the line follower code needs reversing then set this (new sensors are reversed!)
 #define REVERSE_LF true
+
+#elif ROBOTMODEL == 4TRONIX
+
+// TODO XXXX
+// Merge in 4tronix code
+// Also move matrix LED definitions further up in this file, as 4tronix doesn't have
+
+#endif
+
 #ifdef REVERSE_LF
   #define BLACK 1
   #define WHITE 0
@@ -25,6 +56,8 @@ int line_left_val,line_middle_val,line_right_val;  // returning values from line
   #define BLACK 0
   #define WHITE 1
 #endif
+
+int line_left_val,line_middle_val,line_right_val;  // returning values from line sensors
 
 // Line Follower Sensor threshold to use between BLACK or WHITE
 #define LINE_THRESHOLD 500
