@@ -99,10 +99,12 @@ if [ $localRefresh == false ]; then
 		echo "Yes, you are connected. Refreshing..."
 	fi
 	
-	# Remove all old files; do a brand new clone and deal with it 
-	rm -rf RoboticsChallenge
-	git clone $MASTER_LOCATION
- 	cd RoboticsChallenge && git checkout keyestudio
+	# Remove all untracked files and pull new changes
+	cd ~/RoboticsChallenge
+ 	git clean -fd
+  	git reset --hard
+	git pull
+ 	git checkout keyestudio
 
 else
 	echo "This will be a local refresh - all sketches will be deleted"
@@ -111,7 +113,7 @@ else
 
 	# Remove all files (apart from perhaps .git, and anything similar that
 	# someone has been clever enough to create!)
-	rm -rf *
+	git clean -fd
 
 	# Reset to latest GIT
 	git reset --hard
