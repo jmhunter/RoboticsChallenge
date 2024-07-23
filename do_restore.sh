@@ -15,11 +15,22 @@ by sudo below.
 
 __EOF__
 
-sudo RSYNC_PASSWORD=roboteer325 \
-	rsync -avxPz --delete \
-	--exclude=lost+found/ \
-	robot-restore@robot01.ninja.org.uk::restore_${TARGET}_boot/ \
-	/boot/ && \
+if [ "$TARGET" == "master1" ]; then
+	sudo RSYNC_PASSWORD=roboteer325 \
+		rsync -avxPz --delete \
+		--exclude=lost+found/ \
+		robot-restore@robot01.ninja.org.uk::restore_${TARGET}_boot/ \
+		/boot/
+elif [ "$TARGET" == "master2" ]; then
+	sudo RSYNC_PASSWORD=roboteer325 \
+		rsync -avxPz --delete \
+		--exclude=lost+found/ \
+		robot-restore@robot01.ninja.org.uk::restore_${TARGET}_boot_efi/ \
+		/boot/efi/
+else
+	read -p "Unknown target $TARGET"
+	exit 1
+fi
 sudo RSYNC_PASSWORD=roboteer325 \
 	rsync -avxPz --delete \
 	--exclude=lost+found/ \

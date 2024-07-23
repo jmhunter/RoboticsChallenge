@@ -31,14 +31,23 @@ convert ~/Customisations/Robot1-master.png \
 	-annotate +2+10 "Build Date:\n`date '+%Y-%m-%d %H:%M'`" \
 	~/Customisations/Robot1.png 
 
-sudo rsync -avxPz --delete \
-	--exclude=lost+found/ \
-	/boot/ \
-	robot-update@robot01.ninja.org.uk::backup_${TARGET}_boot/  && \
+if [ "$TARGET" == "master1" ]; then
+	sudo rsync -avxPz --delete \
+		--exclude=lost+found/ \
+		/boot/ \
+		robot-update@robot01.ninja.org.uk::backup_${TARGET}_boot/
+elif [ "$TARGET" == "master2" ]; then
+	sudo rsync -avxPz --delete \
+		--exclude=lost+found/ \
+		/boot/efi/ \
+		robot-update@robot01.ninja.org.uk::backup_${TARGET}_boot_efi/
+else
+	read -p "Unknown target $TARGET"
+	exit 1
+fi
 sudo rsync -avxPz --delete \
 	--exclude=lost+found/ \
 	--exclude=/tmp/ \
- 	--exclude=/boot/ \
 	/ \
 	robot-update@robot01.ninja.org.uk::backup_${TARGET}_/
 retval=$?
