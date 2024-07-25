@@ -24,6 +24,11 @@ const int LINE_RIGHT = 8;   // pin for the Line Follow Sensor Right
 // If the line follower code needs reversing then set this (new sensors are reversed!)
 #define REVERSE_LF true
 
+// Ultrasonic Sensor Definitions
+const int ULTRA_SERVO_PAN = A3; // pin for the ultrasonic pan motor set to D10
+#define ULTRA_SONAR_ECHO    13  // pin for the ultrasonic sensor echo set to D13
+#define ULTRA_SONAR_TRIGGER 12  // pin for the ultrasonic sensor trigger set to D12
+
 
 #elif ROBOTMODEL == KEYESTUDIO_0470
 // Directional Servo Motor Definitions
@@ -41,11 +46,23 @@ const int LINE_RIGHT = 8;   // pin for the Line Follow Sensor Right set to D8
 // If the line follower code needs reversing then set this (new sensors are reversed!)
 #define REVERSE_LF true
 
+// Ultrasonic Sensor Definitions
+const int ULTRA_SERVO_PAN = 10; // pin for the ultrasonic pan motor set to D10
+#define ULTRA_SONAR_ECHO    13  // pin for the ultrasonic sensor echo set to D13
+#define ULTRA_SONAR_TRIGGER 12  // pin for the ultrasonic sensor trigger set to D12
+
+
 #elif ROBOTMODEL == 4TRONIX
 
 // TODO XXXX
 // Merge in 4tronix code
 // Also move matrix LED definitions further up in this file, as 4tronix doesn't have
+
+// Ultrasonic Sensor Definitions
+const int ULTRA_SERVO_PAN = 11; // pin for the ultrasonic pan motor set to D10
+#define ULTRA_SONAR_ECHO    13  // pin for the ultrasonic sensor echo set to D13
+#define ULTRA_SONAR_TRIGGER 12  // pin for the ultrasonic sensor trigger set to D12
+
 
 #endif
 
@@ -65,11 +82,6 @@ int line_left_val,line_middle_val,line_right_val;  // returning values from line
 // Line Follower Sensor number of times to check the sensor for an average reading
 #define LINE_SAMPLE_SIZE 1
 
-
-// Ultrasonic Sensor Definitions
-const int ULTRA_SERVO_PAN = 10; // pin for the ultrasonic pan motor set to D10
-#define ULTRA_SONAR_ECHO    13  // pin for the ultrasonic sensor echo set to D13
-#define ULTRA_SONAR_TRIGGER 12  // pin for the ultrasonic sensor trigger set to D12
 
 // Inclusion of libraries for control of robot servos and sensors
 #include "SR04.h"    // Ultrasonic Sensor library for KeyeStudio robots
