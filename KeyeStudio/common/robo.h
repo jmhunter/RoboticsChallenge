@@ -25,9 +25,9 @@ const int LINE_RIGHT = 8;   // pin for the Line Follow Sensor Right
 #define REVERSE_LF true
 
 // Ultrasonic Sensor Definitions
-const int ULTRA_SERVO_PAN = A3; // pin for the ultrasonic pan motor set to D10
-#define ULTRA_SONAR_ECHO    13  // pin for the ultrasonic sensor echo set to D13
-#define ULTRA_SONAR_TRIGGER 12  // pin for the ultrasonic sensor trigger set to D12
+const int ULTRA_SERVO_PAN = A3; // pin for the ultrasonic pan motor
+#define ULTRA_SONAR_ECHO    13  // pin for the ultrasonic sensor echo
+#define ULTRA_SONAR_TRIGGER 12  // pin for the ultrasonic sensor trigger
 
 
 #elif ROBOTMODEL == KEYESTUDIO_0470
@@ -47,9 +47,9 @@ const int LINE_RIGHT = 8;   // pin for the Line Follow Sensor Right set to D8
 #define REVERSE_LF true
 
 // Ultrasonic Sensor Definitions
-const int ULTRA_SERVO_PAN = 10; // pin for the ultrasonic pan motor set to D10
-#define ULTRA_SONAR_ECHO    13  // pin for the ultrasonic sensor echo set to D13
-#define ULTRA_SONAR_TRIGGER 12  // pin for the ultrasonic sensor trigger set to D12
+const int ULTRA_SERVO_PAN = 10; // pin for the ultrasonic pan motor
+#define ULTRA_SONAR_ECHO    13  // pin for the ultrasonic sensor echo
+#define ULTRA_SONAR_TRIGGER 12  // pin for the ultrasonic sensor trigger
 
 
 #elif ROBOTMODEL == 4TRONIX
@@ -59,9 +59,9 @@ const int ULTRA_SERVO_PAN = 10; // pin for the ultrasonic pan motor set to D10
 // Also move matrix LED definitions further up in this file, as 4tronix doesn't have
 
 // Ultrasonic Sensor Definitions
-const int ULTRA_SERVO_PAN = 11; // pin for the ultrasonic pan motor set to D10
-#define ULTRA_SONAR_ECHO    13  // pin for the ultrasonic sensor echo set to D13
-#define ULTRA_SONAR_TRIGGER 12  // pin for the ultrasonic sensor trigger set to D12
+const int ULTRA_SERVO_PAN = 11; // pin for the ultrasonic pan motor
+#define ULTRA_SONAR_ECHO    A0  // pin for the ultrasonic sensor echo
+#define ULTRA_SONAR_TRIGGER A1  // pin for the ultrasonic sensor trigger
 
 
 #endif
