@@ -279,7 +279,7 @@ int leftObstacleSensor()
 int rightObstacleSensor()
 {
   matrix_display(STOP01);                         // show the STOP pattern on the led matrix display
-  pointRight;                                     // rotate pan servo to the right
+  pointRight();                                     // rotate pan servo to the right
   return (Ultrasonic() < ULTRA_SONAR_THRESHOLD);  // take an Ultrasonic sonar reading and compare it to the threshold value
 }
 
