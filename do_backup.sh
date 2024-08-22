@@ -28,7 +28,7 @@ convert ~/Customisations/Robot1-master.png \
 	-pointsize 10 \
 	+antialias \
 	-fill black \
-	-annotate +2+10 "Build Date:\n`date '+%Y-%m-%d %H:%M'`" \
+	-annotate +2+10 "${TARGET} build\n`date '+%Y-%m-%d %H:%M'`" \
 	~/Customisations/Robot1.png 
 
 if [ "$TARGET" == "master1" ]; then
