@@ -7,12 +7,12 @@
 void loop()
 {
 
-  forward(1000,255,255);
+  forward(1000,150,150);
 
-  reverse(1000,255,255);
+  reverse(1000,150,150);
 
-  leftSpin(1000,255);
+  leftSpin(1000,150);
 
-  rightSpin(1000,255);
+  rightSpin(1000,150);
 
 }
