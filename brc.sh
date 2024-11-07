@@ -7,7 +7,7 @@
 #
 
 MASTER_LOCATION="https://github.com/jmhunter/RoboticsChallenge.git"
-ARDUINO_PREFERENCES_FOLDER=~/arduino-current/lib
+ARDUINO_PREFERENCES_FOLDER=~/.arduino15
 
 confirmLocal () {
     # call with a prompt string or use a default
