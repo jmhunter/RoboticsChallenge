@@ -44,28 +44,38 @@ confirmLocal () {
     fi
 }
 
+usage() { echo "$0 usage:" && grep "[[:space:]].)\ #" $0 | sed 's/#//' | sed -r 's/([a-z])\)/-\1/'; exit 0; }
 
 (set -o igncr) 2>/dev/null && set -o igncr; # this comment is needed
 
+while getopts "qrlh" arg; do
+	case $arg in
+	q) # Quiet operation (no notification at end)
+		opt_q=true
+		;;
+	l) # Local refresh
+		localRefresh=true
+		;;
+	r) # Remote refresh
+		localRefresh=false
+		;;
+	h | *)
+		usage
+		;;
+	esac
+done
 
 # Make sure we are in the home directory of the robot user, before we start
 cd ~
 
-case $1 in
-	local)
+# If local or remote is not specified, then prompt (regardless of "-q")
+if [ "$localRefresh" == "" ]; then
+	if confirmLocal "Local or Remote refresh ?" ; then
 		localRefresh=true
-		;;
-	remote)
+	else
 		localRefresh=false
-		;;
-	*)
-		if confirmLocal "Local or Remote refresh ?" ; then
-			localRefresh=true
-		else
-			localRefresh=false
-		fi
-		;;
-esac
+	fi
+fi
 
 if [ $localRefresh == false ]; then
 
@@ -135,5 +145,7 @@ cp -p ~/RoboticsChallenge/BRC\ Refresh.desktop ~/Desktop
 # can't run it again)
 cp -p ~/RoboticsChallenge/brc.sh ~
 
-#notify-send "Robot Refresh" "Completed refresh"
-zenity --info --text="Refresh completed"
+if [ "$opt_q" != "true" ]; then
+	#notify-send "Robot Refresh" "Completed refresh"
+	zenity --info --text="Refresh completed"
+fi
