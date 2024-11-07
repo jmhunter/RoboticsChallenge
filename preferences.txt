@@ -97,5 +97,5 @@ upload.using=bootloader
 upload.verbose=false
 upload.verify=true
 last.sketch.count=1
-last.sketch.default.path=/home/roboteer/RoboticsChallenge/Move/Move.ino
-last.sketch0.path=/home/roboteer/RoboticsChallenge/Move/Move.ino
+last.sketch.default.path=/home/roboteer/RoboticsChallenge/KeyeStudio/Move/Move.ino
+last.sketch0.path=/home/roboteer/RoboticsChallenge/KeyeStudio/Move/Move.ino
