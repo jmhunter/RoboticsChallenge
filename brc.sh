@@ -7,6 +7,7 @@
 #
 
 MASTER_LOCATION="https://github.com/jmhunter/RoboticsChallenge.git"
+ARDUINO_PREFERENCES_FOLDER=~/arduino-current/lib
 
 confirmLocal () {
     # call with a prompt string or use a default
@@ -133,17 +134,19 @@ fi
 rm -rf ~/.local/share/Trash/*
 
 # Reset Arduino Preferences
-cp -p ~/RoboticsChallenge/preferences.txt ~/.arduino15/
+cp -p ~/RoboticsChallenge/preferences.txt "${ARDUINO_PREFERENCES_FOLDER}/"
 
 # Copy the latest script down to replace this one running
 # (Could symlink it, but the symlink's icon is not aesthetically pleasing :) )
 cp -p ~/RoboticsChallenge/BRC\ Refresh.desktop ~/Desktop
 
-# Replace the previous version of brc.sh
+# Replace the previous version of brc.sh, if it is not a symlink
 # (The desktop shortcut points at a copy *outside* the git directory, in case
 # there is an issue refreshing from remote, and we lose the local copy and then
 # can't run it again)
-cp -p ~/RoboticsChallenge/brc.sh ~
+if [ ! -L ~/brc.sh ]; then
+	cp -p ~/RoboticsChallenge/brc.sh ~
+fi
 
 if [ "$opt_q" != "true" ]; then
 	#notify-send "Robot Refresh" "Completed refresh"
