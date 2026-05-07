@@ -300,7 +300,7 @@ int Ultrasonic() {
 
 // --- Display ---
 
-unsigned char last_matrix_value[16] = {0xFF}; // Cache to prevent flickering
+unsigned char last_matrix_value[16] = {0xFE,0xFE,0xFE,0xFE,0xFE,0xFE,0xFE,0xFE,0xFE,0xFE,0xFE,0xFE,0xFE,0xFE,0xFE,0xFE};
 
 void IIC_start() {
   digitalWrite(pins.DISPLAY_CLOCK, HIGH);
@@ -351,19 +351,16 @@ void matrix_display(unsigned char matrix_value[]) {
   // Update cache
   for (int i = 0; i < 16; i++) last_matrix_value[i] = matrix_value[i];
 
-  // Send Data
+  // Original IIC Sequence
   IIC_start();
-  IIC_send(0x40); // Data command: auto-increment mode
+  IIC_send(0xc0); // Address command
+  for (int i = 0; i < 16; i++) {
+    IIC_send(matrix_value[i]);
+  }
   IIC_end();
 
   IIC_start();
-  IIC_send(0xc0); // Address command: start at 00H
-  for (int i = 0; i < 16; i++) IIC_send(matrix_value[i]);
-  IIC_end();
-
-  // Control Display
-  IIC_start();
-  IIC_send(0x8A); // Display control: 4/16 brightness, display ON
+  IIC_send(0x8A); // Display control
   IIC_end();
 }
 
