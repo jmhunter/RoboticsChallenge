@@ -26,13 +26,9 @@ extern PinConfig pins;
 // --- Speed Scaling ---
 #define KEYESTUDIO_SPEED_SCALE 0.51  // 130/255 approx 0.51
 
-// --- Constants ---
+// Constants
 #define BLACK 1
 #define WHITE 0
-
-// Line Follower Sensor threshold
-#define LINE_THRESHOLD 500
-#define LINE_SAMPLE_SIZE 1
 
 // Ultrasonic Constants
 #define ULTRA_SERVO_CENTRE     90

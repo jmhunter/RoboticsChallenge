@@ -224,32 +224,20 @@ void tiltValue(int pos) {
 // --- Line Sensors ---
 
 int leftLineSensor() {
-  int val;
-  if (detectedRobot == KEYESTUDIO) {
-    val = digitalRead(pins.LINE_LEFT);
-  } else {
-    val = (analogRead(pins.LINE_LEFT) < LINE_THRESHOLD) ? 0 : 1;
-  }
+  int val = digitalRead(pins.LINE_LEFT);
   Serial.println("Left Line Sensor: " + String(val));
   return val;
 }
 
 int centreLineSensor() {
-  if (detectedRobot == KEYESTUDIO) {
-    int val = digitalRead(pins.LINE_CENTRE);
-    Serial.println("Centre Line Sensor: " + String(val));
-    return val;
-  }
-  return 255; // Dummy for Barclays
+  if (pins.LINE_CENTRE == 255) return 255;
+  int val = digitalRead(pins.LINE_CENTRE);
+  Serial.println("Centre Line Sensor: " + String(val));
+  return val;
 }
 
 int rightLineSensor() {
-  int val;
-  if (detectedRobot == KEYESTUDIO) {
-    val = digitalRead(pins.LINE_RIGHT);
-  } else {
-    val = (analogRead(pins.LINE_RIGHT) < LINE_THRESHOLD) ? 0 : 1;
-  }
+  int val = digitalRead(pins.LINE_RIGHT);
   Serial.println("Right Line Sensor: " + String(val));
   return val;
 }
