@@ -19,7 +19,7 @@ unsigned char eagle[] = {0x00,0x00,0x04,0x0E,0x1E,0x3E,0x3C,0x7D,0x7F,0x3C,0x3E,
 // --- Initialization and Detection ---
 
 void detectRobot() {
-  // Try to detect Barclays via I2C pull-ups on A4(18) and A5(19)
+  // Try to detect display via I2C pull-ups
   pinMode(18, OUTPUT);
   pinMode(19, OUTPUT);
   digitalWrite(18, LOW);

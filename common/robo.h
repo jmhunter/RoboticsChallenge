@@ -37,7 +37,7 @@ extern PinConfig pins;
 #define ULTRA_SERVO_WAIT      200
 #define ULTRA_SONAR_WAIT       30
 #define ULTRA_SONAR_SAMPLE_SIZE 5
-#define ULTRA_SONAR_THRESHOLD  50
+#define ULTRA_SONAR_THRESHOLD  20 // Closer than this means an obstacle has been detected
 #define ULTRA_SONAR_MAX_RANGE 1000
 
 // Matrix Display Patterns
