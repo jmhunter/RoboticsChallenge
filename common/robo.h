@@ -22,7 +22,9 @@ struct PinConfig {
 extern PinConfig pins;
 
 // --- Speed Scaling ---
-#define KEYESTUDIO_SPEED_SCALE 0.51  // 130/255 approx 0.51
+// Slow down the Keyestudio robots to roughly match the 4Tronix speeds
+// (and make them less likely to be damaged as they fly around the room!)
+#define KEYESTUDIO_SPEED_SCALE 0.4
 
 // Constants
 #define BLACK 1
