@@ -3,8 +3,6 @@
 
 #include <Arduino.h>
 #include <Servo.h>
-#include "NewPing.h"
-#include "SR04.h"
 
 // --- Robot Detection ---
 enum RobotType { KEYESTUDIO, _4TRONIX };

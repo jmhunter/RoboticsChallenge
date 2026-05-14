@@ -5,8 +5,6 @@ RobotType detectedRobot;
 PinConfig pins;
 
 // Libraries instances
-SR04 sr04_ks = SR04(0, 0); // Placeholder, will be re-initialized if needed
-NewPing sonar_4t = NewPing(0, 0, 0); // Placeholder
 Servo ultraPanServo, ultraTiltServo;
 
 // Matrix Display Patterns
@@ -44,7 +42,6 @@ void detectRobot() {
       13, 12,     // SONAR_ECHO, TRIGGER
       true        // LINE_SENSOR_REVERSED
     };
-    sr04_ks = SR04(pins.ULTRA_SONAR_ECHO, pins.ULTRA_SONAR_TRIGGER);
   } else {
     detectedRobot = _4TRONIX;
     Serial.println("Robot Detected: 4TRONIX");
@@ -57,7 +54,6 @@ void detectRobot() {
       13, 12,     // SONAR_ECHO, TRIGGER (aligned)
       true        // LINE_SENSOR_REVERSED
     };
-    sonar_4t = NewPing(pins.ULTRA_SONAR_TRIGGER, pins.ULTRA_SONAR_ECHO, ULTRA_SONAR_MAX_RANGE);
   }
 }
 
@@ -271,15 +267,18 @@ boolean rightObstacleSensor() {
 }
 
 int Ultrasonic() {
-  int cm = 0;
-  if (detectedRobot == KEYESTUDIO) {
-    cm = sr04_ks.Distance();
-  } else {
-    unsigned int pingTime = sonar_4t.ping();
-    cm = pingTime / US_ROUNDTRIP_CM;
-    if (cm == 0 || cm > ULTRA_SONAR_MAX_RANGE) cm = ULTRA_SONAR_MAX_RANGE;
-    delay(ULTRA_SONAR_WAIT);
-  }
+  digitalWrite(pins.ULTRA_SONAR_TRIGGER, LOW);
+  delayMicroseconds(2);
+  digitalWrite(pins.ULTRA_SONAR_TRIGGER, HIGH);
+  delayMicroseconds(10);
+  digitalWrite(pins.ULTRA_SONAR_TRIGGER, LOW);
+
+  long duration = pulseIn(pins.ULTRA_SONAR_ECHO, HIGH, 60000); // 60ms timeout (~10m)
+  int cm = (int)(duration * 0.034 / 2);
+
+  if (cm == 0 || cm > ULTRA_SONAR_MAX_RANGE) cm = ULTRA_SONAR_MAX_RANGE;
+  
+  delay(ULTRA_SONAR_WAIT);
   Serial.print("Sonar Ping: ");
   Serial.print(cm);
   Serial.println("cm");
@@ -401,6 +400,9 @@ void setup() {
   
   if (pins.OBSTACLE_LEFT != 255) pinMode(pins.OBSTACLE_LEFT, INPUT);
   if (pins.OBSTACLE_RIGHT != 255) pinMode(pins.OBSTACLE_RIGHT, INPUT);
+  
+  pinMode(pins.ULTRA_SONAR_TRIGGER, OUTPUT);
+  pinMode(pins.ULTRA_SONAR_ECHO, INPUT);
   
   initializeServos();
   initializeDisplay();
