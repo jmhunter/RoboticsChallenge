@@ -5,7 +5,7 @@
 // You don't need to change anything in this code sketch.
 // Just upload it straight to the robot.
 
-const int WHEELSPEED = 150;
+const int WHEELSPEED = 255;
 
 void loop()
 {
