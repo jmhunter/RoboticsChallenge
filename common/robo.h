@@ -26,6 +26,13 @@ extern PinConfig pins;
 // (and make them less likely to be damaged as they fly around the room!)
 #define KEYESTUDIO_SPEED_SCALE 0.4
 
+// --- Debug Flag ---
+// 0: Off
+// 1: Robot detection and initialization messages
+// 2: Level 1 + Movement messages (forward, reverse, spin, halt)
+// 3: Level 2 + Sensor and diagnostic data (Line, Obstacle, Sonar)
+#define DEBUG_LEVEL 1
+
 // Constants
 #define BLACK 1
 #define WHITE 0

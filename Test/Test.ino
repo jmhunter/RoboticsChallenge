@@ -1,5 +1,9 @@
 #include "robo.h"
 
+// Override debug level for the diagnostic suite to show all sensor data
+// #undef DEBUG_LEVEL
+// #define DEBUG_LEVEL 3
+
 /* 
  * Barclays Robot Unified Interactive Diagnostic Suite
  * --------------------------------------------------

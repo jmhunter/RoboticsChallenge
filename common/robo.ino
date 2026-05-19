@@ -32,7 +32,9 @@ void detectRobot() {
   
   if (digitalRead(18) == HIGH && digitalRead(19) == HIGH) {
     detectedRobot = KEYESTUDIO;
-    Serial.println("Robot Detected: KEYESTUDIO");
+    if (DEBUG_LEVEL >= 1) {
+      Serial.println("Robot Detected: KEYESTUDIO");
+    }
     pins = {
       5, 2, 6, 4, // Motor L1, L2, L3, L4
       11, 7, 8,   // LINE_LEFT, CENTRE, RIGHT
@@ -44,7 +46,9 @@ void detectRobot() {
     };
   } else {
     detectedRobot = _4TRONIX;
-    Serial.println("Robot Detected: 4TRONIX");
+    if (DEBUG_LEVEL >= 1) {
+      Serial.println("Robot Detected: 4TRONIX");
+    }
     pins = {
       5, 2, 6, 4, // Motor L1, L2, L3, L4 (aligned)
       11, 255, 8, // LINE_LEFT, CENTRE, RIGHT (aligned, no centre)
@@ -122,14 +126,18 @@ void robotMove(int left_speed, int right_speed) {
 
 void halt(int wait) {
   if (detectedRobot == KEYESTUDIO) matrix_display(eagle);
-  Serial.println("Stopping");
+  if (DEBUG_LEVEL >= 2) {
+    Serial.println("Stopping");
+  }
   _rawMove(0, LOW, 0, LOW);
   if (wait > 0) delay(wait);
 }
 
 void forward(int wait, int vSpeedLeft, int vSpeedRight) {
   if (detectedRobot == KEYESTUDIO) matrix_display(front);
-  Serial.println("Moving Forwards: Speed Left and Right: " + String(vSpeedLeft) + " " + String(vSpeedRight));
+  if (DEBUG_LEVEL >= 2) {
+    Serial.println("Moving Forwards: Speed Left and Right: " + String(vSpeedLeft) + " " + String(vSpeedRight));
+  }
   robotMove(vSpeedLeft, vSpeedRight);
   if (wait > 0) {
     delay(wait);
@@ -139,7 +147,9 @@ void forward(int wait, int vSpeedLeft, int vSpeedRight) {
 
 void reverse(int wait, int vSpeedLeft, int vSpeedRight) {
   if (detectedRobot == KEYESTUDIO) matrix_display(back);
-  Serial.println("Moving Backwards: Speed Left and Right: " + String(vSpeedLeft) + " " + String(vSpeedRight));
+  if (DEBUG_LEVEL >= 2) {
+    Serial.println("Moving Backwards: Speed Left and Right: " + String(vSpeedLeft) + " " + String(vSpeedRight));
+  }
   robotMove(-vSpeedLeft, -vSpeedRight);
   if (wait > 0) {
     delay(wait);
@@ -149,7 +159,9 @@ void reverse(int wait, int vSpeedLeft, int vSpeedRight) {
 
 void leftSpin(int wait, int vSpeed) {
   if (detectedRobot == KEYESTUDIO) matrix_display(left);
-  Serial.println("Spinning left");
+  if (DEBUG_LEVEL >= 2) {
+    Serial.println("Spinning left");
+  }
   robotMove(-vSpeed, vSpeed);
   if (wait > 0) {
     delay(wait);
@@ -159,7 +171,9 @@ void leftSpin(int wait, int vSpeed) {
 
 void rightSpin(int wait, int vSpeed) {
   if (detectedRobot == KEYESTUDIO) matrix_display(right);
-  Serial.println("Spinning right");
+  if (DEBUG_LEVEL >= 2) {
+    Serial.println("Spinning right");
+  }
   robotMove(vSpeed, -vSpeed);
   if (wait > 0) {
     delay(wait);
@@ -221,20 +235,26 @@ void tiltValue(int pos) {
 
 int leftLineSensor() {
   int val = digitalRead(pins.LINE_LEFT);
-  Serial.println("Left Line Sensor: " + String(val));
+  if (DEBUG_LEVEL >= 3) {
+    Serial.println("Left Line Sensor: " + String(val));
+  }
   return val;
 }
 
 int centreLineSensor() {
   if (pins.LINE_CENTRE == 255) return 255;
   int val = digitalRead(pins.LINE_CENTRE);
-  Serial.println("Centre Line Sensor: " + String(val));
+  if (DEBUG_LEVEL >= 3) {
+    Serial.println("Centre Line Sensor: " + String(val));
+  }
   return val;
 }
 
 int rightLineSensor() {
   int val = digitalRead(pins.LINE_RIGHT);
-  Serial.println("Right Line Sensor: " + String(val));
+  if (DEBUG_LEVEL >= 3) {
+    Serial.println("Right Line Sensor: " + String(val));
+  }
   return val;
 }
 
@@ -243,7 +263,9 @@ int rightLineSensor() {
 boolean leftObstacleSensor() {
   if (detectedRobot == _4TRONIX) {
     if (digitalRead(pins.OBSTACLE_LEFT) == 0) {
-      Serial.println("Left Obstacle Detected");
+      if (DEBUG_LEVEL >= 3) {
+        Serial.println("Left Obstacle Detected");
+      }
       return true;
     }
     return false;
@@ -256,7 +278,9 @@ boolean leftObstacleSensor() {
 boolean rightObstacleSensor() {
   if (detectedRobot == _4TRONIX) {
     if (digitalRead(pins.OBSTACLE_RIGHT) == 0) {
-      Serial.println("Right Obstacle Detected");
+      if (DEBUG_LEVEL >= 3) {
+        Serial.println("Right Obstacle Detected");
+      }
       return true;
     }
     return false;
@@ -279,9 +303,11 @@ int Ultrasonic() {
   if (cm == 0 || cm > ULTRA_SONAR_MAX_RANGE) cm = ULTRA_SONAR_MAX_RANGE;
   
   delay(ULTRA_SONAR_WAIT);
-  Serial.print("Sonar Ping: ");
-  Serial.print(cm);
-  Serial.println("cm");
+  if (DEBUG_LEVEL >= 3) {
+    Serial.print("Sonar Ping: ");
+    Serial.print(cm);
+    Serial.println("cm");
+  }
   return cm;
 }
 
@@ -407,5 +433,7 @@ void setup() {
   initializeServos();
   initializeDisplay();
   
-  Serial.println("Robot Initialized");
+  if (DEBUG_LEVEL >= 1) {
+    Serial.println("Robot Initialized");
+  }
 }
