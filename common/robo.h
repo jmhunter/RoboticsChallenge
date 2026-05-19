@@ -95,6 +95,8 @@ int Ultrasonic();
 
 // Display
 void displayNumber(int num);
+void displayChar(char c);
+void displayString(const char* s);
 void displayClear();
 void displayOff();
 void matrix_display(unsigned char matrix_value[]);
